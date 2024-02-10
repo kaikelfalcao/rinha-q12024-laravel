@@ -2,8 +2,7 @@ version: "3.9"
 
 services:
     api01: &api
-        image: laravelfrakenrinha
-        build: .
+        image: kaikelfalcao/laravelfrakenrinha
         depends_on:
             db:
                 condition: service_healthy
