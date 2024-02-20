@@ -18,8 +18,5 @@ yarn-error.log
 /.idea
 /.vscode
 
-/caddy
-frankenphp
-frankenphp-worker.php
-/load-test
-/executar-teste-local.sh
+.DS_Store
+

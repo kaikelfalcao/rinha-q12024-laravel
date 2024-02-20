@@ -21,7 +21,7 @@ class TransacaoController extends Controller
             return (new Response)->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         
-        if (!isset($id) || !is_numeric($id) || !is_int($id + 0) || $id < 0) {
+        if (!is_numeric($id) ||  $id <= 0) {
             return (new Response)->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -34,11 +34,15 @@ class TransacaoController extends Controller
             return (new Response)->setStatusCode(Response::HTTP_NOT_FOUND);
         }
 
-        $cliente->saldo = $request->tipo === "d" ? $cliente->saldo - $request->valor : $cliente->saldo + $request->valor;
 
-        if($request->tipo === "d" && $cliente->saldo < -$cliente->limite_conta ) {
-            DB::rollBack();
-            return (new Response)->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
+        if($request->tipo === "d"){
+            if ($cliente->saldo - $request->valor < -$cliente->limite_conta) {
+                DB::rollBack();
+                return (new Response)->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+            $cliente->saldo = $cliente->saldo - $request->valor;
+        }else{
+            $cliente->saldo = $cliente->saldo + $request->valor;
         }
 
         try {
@@ -62,7 +66,7 @@ class TransacaoController extends Controller
     }
 
     public function pegarExtrato($id){
-        if (!isset($id) || !is_numeric($id) || !is_int($id + 0) || $id < 0) {
+        if (!is_numeric($id) || $id <= 0) {
             return (new Response)->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     
